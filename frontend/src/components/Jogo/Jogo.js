@@ -2,7 +2,7 @@ import './Jogo.css';
 import clouds from "../../assets/clouds.png";
 import pipe from "../../assets/pipe.png";
 import mario from "../../assets/mario.gif";
-import game_over from "../../assets/game-over.png";
+import gameOver from "../../assets/game-over.png";
 import { useRef, useState } from "react";
 
 function Jogo() {
@@ -23,7 +23,9 @@ function Jogo() {
     // tudo o que está sendo renderizado
 
     const [estaPulando, setEstaPulando] = useState(false);
+    const [estaMorto, setEstaMorto] = useState(false);
 
+    //Criamos referências para 'mario' e 'cano'
     const marioRef = useRef();
     const canoRef = useRef();
 
@@ -47,22 +49,29 @@ function Jogo() {
     }
 
     setInterval(function () {
-        const valor = marioEstaNoCano();
+        const estaNoCano = marioEstaNoCano();
 
-        console.log("Mário está no cano?", valor);
+        //Se o Mario não estiver no cano, encerramos a função com o return
+        if(!estaNoCano) {
+            return;
+        }
 
+        //Caso esteja no cano, atualizamos o estado 'estaMorto' para true
+        setEstaMorto(true);
     }, 100);
+
+    console.log({ estaMorto });
 
     document.onkeydown = function () {
         // console.log("On Key Down");
         // Atualizamos o estado para true
-        // setEstaPulando(true);
+        setEstaPulando(true);
 
-        // // 700ms = 0.7s
-        // setTimeout(function () {
+        // 700ms = 0.7s
+        setTimeout(function () {
         //     // Voltamos o estado para o valor inicial
-        //     setEstaPulando(false);
-        // }, 700);
+            setEstaPulando(false);
+        }, 700);
     };
 
     // console.log(15, { estaPulando })
@@ -73,20 +82,41 @@ function Jogo() {
     // Caso esteja pulando (valor true), a classe será `.mario`
     // e `.mario-pulo`
     if (estaPulando) {
-        // marioClassName = "mario mario-pulo";
+        marioClassName = "mario mario-pulo";
     }
+
+    // No lugar de declarar uma variável e mudar o valor dela em um caso de 'if',
+    // como fizemos com a className do Mario, podemos criar uma variável
+    // com dois valores, um para caso a condiçãi seja verdadeira, outro para
+    // caso a condição seja false
+    // Esse é o Operador Ternário!
+    const marioImage = estaMorto ? gameOver : mario;
 
     return (
         <div className="jogo">
         
-        <img className="nuvens" src={clouds} alt="Nuvens" />
+        <img 
+            className="nuvens" 
+            src={clouds} 
+            alt="Nuvens" 
+        />
 
-        <img ref={canoRef} className="cano" src={pipe} alt="Cano" />
+        <img 
+            ref={canoRef} 
+            className="cano" 
+            src={pipe} 
+            alt="Cano" 
+        />
         {/* <img className="cano" src={pipe} alt="Cano" /> */}
 
         {/* <img className="mario" src={mario} alt="Mário" /> */}
         
-        <img ref={marioRef} className={marioClassName} src={mario} alt="Mário" />
+        <img 
+            ref={marioRef} 
+            className={marioClassName} 
+            src={marioImage} 
+            alt="Mário" 
+        />
 
         <div className="chao"></div>
     </div>
