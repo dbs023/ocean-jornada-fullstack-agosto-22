@@ -1,9 +1,9 @@
 import './Jogo.css';
 import clouds from "../../assets/clouds.png";
-import pipe from "../../assets/pipe.png";
+import cano from "../../assets/pipe.png";
 import mario from "../../assets/mario.gif";
 import gameOver from "../../assets/game-over.png";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Jogo() {
     /*
@@ -23,7 +23,10 @@ function Jogo() {
     // tudo o que está sendo renderizado
 
     const [estaPulando, setEstaPulando] = useState(false);
+
     const [estaMorto, setEstaMorto] = useState(false);
+    
+    const [pontos, setPontos] = useState(0);
 
     //Criamos referências para 'mario' e 'cano'
     const marioRef = useRef();
@@ -60,7 +63,25 @@ function Jogo() {
         setEstaMorto(true);
     }, 100);
 
-    console.log({ estaMorto });
+    useEffect( 
+        function () {
+            //Salvar a pontuação
+        const interval = setInterval(function () {
+            if (estaMorto) {
+                return;
+            }
+
+            setPontos(pontos + 1);
+            
+            console.log({ pontos });
+        }, 500);
+        
+        return () => clearInterval(interval);
+        },
+        [estaMorto, pontos]
+    );
+
+    // console.log({ estaMorto });
 
     document.onkeydown = function () {
         // console.log("On Key Down");
@@ -85,6 +106,9 @@ function Jogo() {
         marioClassName = "mario mario-pulo";
     }
 
+    // Outra forma de simplificar, mario Ternário
+
+
     // No lugar de declarar uma variável e mudar o valor dela em um caso de 'if',
     // como fizemos com a className do Mario, podemos criar uma variável
     // com dois valores, um para caso a condiçãi seja verdadeira, outro para
@@ -92,6 +116,7 @@ function Jogo() {
     // Esse é o Operador Ternário!
     const marioImage = estaMorto ? gameOver : mario;
 
+    const pararAnimacao = estaMorto ? "parar-animacao" : "";
     return (
         <div className="jogo">
         
@@ -103,8 +128,8 @@ function Jogo() {
 
         <img 
             ref={canoRef} 
-            className="cano" 
-            src={pipe} 
+            className={"cano " + pararAnimacao} 
+            src={cano} 
             alt="Cano" 
         />
         {/* <img className="cano" src={pipe} alt="Cano" /> */}
