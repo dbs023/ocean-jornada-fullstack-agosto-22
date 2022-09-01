@@ -5,7 +5,7 @@ import mario from "../../assets/mario.gif";
 import gameOver from "../../assets/game-over.png";
 import { useEffect, useRef, useState } from "react";
 
-function Jogo() {
+function Jogo( props ) {
     /*
     const estaPulando = useState(false);
     const estado = estaPulando[0];
@@ -51,17 +51,30 @@ function Jogo() {
         );
     }
 
-    setInterval(function () {
-        const estaNoCano = marioEstaNoCano();
+    useEffect(
+        //Effect
+        function () {
 
-        //Se o Mario não estiver no cano, encerramos a função com o return
-        if(!estaNoCano) {
-            return;
-        }
+            const interval = setInterval(function () {
+                // Pegamos o valor que determinar se o Mario
+                // está no cano ou não
+                const estaNoCano = marioEstaNoCano();
 
-        //Caso esteja no cano, atualizamos o estado 'estaMorto' para true
-        setEstaMorto(true);
-    }, 100);
+                //Se o Mario não estiver no cano, encerramos a função com o return
+                if(!estaNoCano || estaMorto) {
+                    return;
+                }
+
+                //Caso esteja no cano, atualizamos o estado 'estaMorto' para true
+                setEstaMorto(true);
+                props.onMorrer();
+            }, 100);
+            // (Opcional) Return mecanismo que desfaz o Effect anterior
+            return () => clearInterval(interval);
+        },
+        // Lista de Dependências
+        []
+    );
 
     useEffect( 
         function () {
@@ -81,6 +94,9 @@ function Jogo() {
         [estaMorto, pontos]
     );
 
+    /*
+        Eibir pontos na tela
+    */
     // console.log({ estaMorto });
 
     document.onkeydown = function () {
