@@ -73,7 +73,7 @@ function Jogo( props ) {
             return () => clearInterval(interval);
         },
         // Lista de Dependências
-        []
+        [estaMorto, props]
     );
 
     useEffect( 
@@ -85,13 +85,13 @@ function Jogo( props ) {
             }
 
             setPontos(pontos + 1);
-            
-            console.log({ pontos });
+            props.onPontos(pontos + 1);
+            // console.log({ pontos });
         }, 500);
         
         return () => clearInterval(interval);
         },
-        [estaMorto, pontos]
+        [estaMorto, pontos, props]
     );
 
     /*
@@ -133,6 +133,7 @@ function Jogo( props ) {
     const marioImage = estaMorto ? gameOver : mario;
 
     const pararAnimacao = estaMorto ? "parar-animacao" : "";
+    
     return (
         <div className="jogo">
         
